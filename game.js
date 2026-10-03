@@ -17,3 +17,4 @@ document.getElementById('closeDaily').onclick=()=>document.getElementById('daily
 document.getElementById('playDaily').onclick=()=>{document.getElementById('dailyModal').classList.add('hidden');toastMsg('🎯 Daily challenge active!')};
 document.getElementById('shareBtn').onclick=async()=>{const text=`I scored ${state.score.toLocaleString()} on Gridly! 🧩🔥 Can you beat me?`;try{if(navigator.share)await navigator.share({title:'Gridly',text});else await navigator.clipboard.writeText(text);toastMsg('↗ Score ready to share!')}catch(e){}};
 update();makeBoard();
+window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('splash')?.classList.add('hide'),1900)});

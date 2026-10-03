@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Grid Game — Match & Grow</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">MATCH • GROW • EARN</div>
+        <h1>Grid Game</h1>
+      </div>
+      <div class="coin-pill" aria-label="Coins"><span>🪙</span><strong id="coins">0</strong></div>
+    </header>
+
+    <section class="score-card">
+      <div><span class="label">SCORE</span><strong id="score">0</strong></div>
+      <div><span class="label">CURRENT MATCH</span><strong><span id="target">2</span>×</strong></div>
+      <div><span class="label">BEST</span><strong id="best">0</strong></div>
+    </section>
+
+    <section class="mission">
+      <div class="mission-copy">
+        <span class="dot"></span>
+        <div><b id="missionTitle">Match 2 squares</b><small>Select the same color</small></div>
+      </div>
+      <div class="streak" id="streak">0 matched</div>
+    </section>
+
+    <section class="board-wrap">
+      <div id="board" class="board" aria-label="Game board"></div>
+    </section>
+
+    <div class="hint" id="hint">Find 2 squares with the same color.</div>
+    <button id="restart" class="restart">↻ New Run</button>
+
+    <div id="reward" class="reward hidden" role="status">
+      <div class="reward-icon">🪙</div>
+      <div><b>+100 coins!</b><span>3×3 match completed</span></div>
+    </div>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>

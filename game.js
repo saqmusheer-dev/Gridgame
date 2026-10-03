@@ -1,125 +1,19 @@
-const boardEl = document.getElementById('board');
-const scoreEl = document.getElementById('score');
-const coinsEl = document.getElementById('coins');
-const bestEl = document.getElementById('best');
-const targetEl = document.getElementById('target');
-const missionTitle = document.getElementById('missionTitle');
-const streakEl = document.getElementById('streak');
-const hintEl = document.getElementById('hint');
-const rewardEl = document.getElementById('reward');
-const restartBtn = document.getElementById('restart');
-
-const COLORS = ['#ff4d6d','#ff9f1c','#2ec4b6','#4dabf7','#9b5de5','#f15bb5','#7bd389','#ffd166'];
-const BOARD_SIZE = 36;
-const TARGETS = [2,3,4,5,6,7,8,9];
-const POINTS = {2:10,3:30,4:50,5:65,6:75,7:85,8:95,9:100};
-
-let cells = [];
-let selected = [];
-let targetIndex = 0;
-let score = 0;
-let coins = 0;
-let matchedThisRun = 0;
-let busy = false;
-let best = Number(localStorage.getItem('gridgame-best') || 0);
-
-function target(){ return TARGETS[targetIndex]; }
-
-function shuffle(arr){
-  for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}
-  return arr;
-}
-
-function makeBoard(){
-  boardEl.innerHTML='';
-  selected=[];
-  // Build a random board, while guaranteeing a valid group for the current target.
-  const colors = Array.from({length:BOARD_SIZE},()=>COLORS[Math.floor(Math.random()*COLORS.length)]);
-  const guaranteed = COLORS[Math.floor(Math.random()*COLORS.length)];
-  shuffle([...Array(BOARD_SIZE).keys()]).slice(0,target()).forEach(i=>colors[i]=guaranteed);
-  cells = colors.map((color,i)=>({color,index:i}));
-  cells.forEach(c=>{
-    const el=document.createElement('button');
-    el.className='cell';
-    el.style.background=c.color;
-    el.style.color=c.color;
-    el.setAttribute('aria-label',`Color square ${c.index+1}`);
-    el.addEventListener('click',()=>pick(c.index));
-    c.el=el;
-    boardEl.appendChild(el);
-  });
-  updateUI();
-}
-
-function pick(index){
-  if(busy) return;
-  const cell=cells[index];
-  if(selected.includes(index)){
-    selected=selected.filter(i=>i!==index);
-    cell.el.classList.remove('selected');
-    updateHint();
-    return;
-  }
-  if(selected.length===0){
-    selected=[index]; cell.el.classList.add('selected'); updateHint(); return;
-  }
-  // Every square in a match must have exactly the same color.
-  if(cell.color!==cells[selected[0]].color){
-    cell.el.classList.add('wrong');
-    setTimeout(()=>cell.el.classList.remove('wrong'),300);
-    hintEl.textContent='Different color — choose the matching color.';
-    return;
-  }
-  selected.push(index); cell.el.classList.add('selected'); updateHint();
-  if(selected.length===target()) completeMatch();
-}
-
-function completeMatch(){
-  busy=true;
-  const gained=POINTS[target()];
-  score += gained;
-  matchedThisRun += target();
-  best=Math.max(best,score);
-  localStorage.setItem('gridgame-best',best);
-  selected.forEach(i=>cells[i].el.classList.add('correct'));
-  hintEl.textContent=`+${gained} points!`;
-  setTimeout(()=>{
-    // Recolor the board and grow the required match size. There are no levels.
-    targetIndex = (targetIndex+1) % TARGETS.length;
-    if(target()===2){
-      coins += 100;
-      showReward();
-    }
-    makeBoard();
-    busy=false;
-  },430);
-}
-
-function updateUI(){
-  scoreEl.textContent=score.toLocaleString();
-  coinsEl.textContent=coins.toLocaleString();
-  bestEl.textContent=best.toLocaleString();
-  targetEl.textContent=target();
-  missionTitle.textContent=`Match ${target()} squares`;
-  streakEl.textContent=`${matchedThisRun} matched`;
-  updateHint();
-}
-
-function updateHint(){
-  if(selected.length===0){hintEl.textContent=`Find ${target()} squares with the same color.`;return}
-  const left=target()-selected.length;
-  hintEl.textContent=left===0?'Match complete!':`${selected.length}/${target()} selected — ${left} more to go.`;
-}
-
-function showReward(){
-  rewardEl.classList.remove('hidden');
-  setTimeout(()=>rewardEl.classList.add('hidden'),1800);
-}
-
-function reset(){
-  score=0; coins=0; targetIndex=0; matchedThisRun=0; busy=false;
-  makeBoard();
-}
-
-restartBtn.addEventListener('click',reset);
-makeBoard();
+const board=document.getElementById('board'),scoreEl=document.getElementById('score'),bestEl=document.getElementById('best'),coinsEl=document.getElementById('coins'),targetEl=document.getElementById('target'),comboEl=document.getElementById('combo'),groupsEl=document.getElementById('groups'),streakEl=document.getElementById('streak'),groupScoreEl=document.getElementById('groupScore'),missionKicker=document.getElementById('missionKicker'),tip=document.getElementById('tip'),toast=document.getElementById('toast'),reward=document.getElementById('reward');
+const COLORS=['#ff477e','#ffb703','#36d399','#38bdf8','#8b5cf6','#fb7185','#22d3ee','#a3e635'];
+let state={score:+localStorage.getItem('grid_score')||0,best:+localStorage.getItem('grid_best')||0,coins:+localStorage.getItem('grid_coins')||0,target:2,selected:[],groups:0,combo:0,cycle:0,rainbowChance:.05,sound:true,daily:+localStorage.getItem('grid_daily')||0,day:localStorage.getItem('grid_day')||new Date().toDateString()};
+if(state.day!==new Date().toDateString()){state.day=new Date().toDateString();state.daily=0;localStorage.setItem('grid_daily',0);}
+const points={2:10,3:30,4:50,5:65,6:75,7:85,8:95,9:100};
+function save(){localStorage.setItem('grid_score',state.score);localStorage.setItem('grid_best',state.best);localStorage.setItem('grid_coins',state.coins);localStorage.setItem('grid_daily',state.daily);localStorage.setItem('grid_day',state.day)}
+function update(){scoreEl.textContent=state.score.toLocaleString();bestEl.textContent=state.best.toLocaleString();coinsEl.textContent=state.coins.toLocaleString();targetEl.textContent=state.target;comboEl.textContent=state.combo;groupsEl.textContent=state.groups;streakEl.textContent=state.combo;groupScoreEl.textContent='+'+(points[state.target]||100);missionKicker.textContent=state.target===9?'FINAL COMBO':'NEXT COMBO';document.getElementById('dailyText').textContent=`Match ${Math.min(state.daily,20)}/20 groups`;document.getElementById('dailyModalCount').textContent=Math.min(state.daily,20);document.getElementById('dailyBar').style.width=Math.min(100,state.daily*5)+'%';}
+function pickColor(){return COLORS[Math.floor(Math.random()*COLORS.length)]}
+function makeBoard(){board.innerHTML='';state.selected=[];const count=36;let tiles=[];const forced=state.target;const forcedColor=pickColor();let rainbowIndex=Math.random()<state.rainbowChance?Math.floor(Math.random()*count):-1;let forcedIndices=new Set();while(forcedIndices.size<forced)forcedIndices.add(Math.floor(Math.random()*count));for(let i=0;i<count;i++){let el=document.createElement('button');el.className='tile';let rainbow=i===rainbowIndex;el.dataset.color=rainbow?'rainbow':(forcedIndices.has(i)?forcedColor:pickColor());if(rainbow)el.classList.add('rainbow');else el.style.setProperty('--c',el.dataset.color);el.setAttribute('aria-label',rainbow?'Rainbow wild card':'Color tile');el.addEventListener('click',()=>selectTile(el));board.appendChild(el);tiles.push(el)} }
+function selectTile(el){if(state.selected.includes(el))return;if(state.selected.length===0){state.selected.push(el);el.classList.add('selected');return}let first=state.selected[0],same=first.dataset.color===el.dataset.color||first.dataset.color==='rainbow'||el.dataset.color==='rainbow';if(!same){state.selected.forEach(x=>{x.classList.add('bad');setTimeout(()=>x.classList.remove('bad','selected'),280)});state.selected=[];tip.textContent='👀 Same color — or use the rainbow wild card!';return}state.selected.push(el);el.classList.add('selected');if(state.selected.length===state.target)completeGroup();}
+function completeGroup(){const n=state.target,earned=points[n]||100;state.score+=earned;state.best=Math.max(state.best,state.score);state.groups++;state.combo++;state.daily=Math.min(20,state.daily+1);state.selected.forEach(x=>{x.classList.add('pop');setTimeout(()=>x.remove(),300)});if(state.combo>=3)toastMsg(`🔥 ${state.combo}× combo +${earned}`);else toastMsg(`+${earned} points`);if(n===9){state.coins+=100;reward.classList.remove('hidden');setTimeout(()=>reward.classList.add('hidden'),1300);state.target=2;state.combo=0;state.cycle++;tip.textContent='💎 3×3 complete! +100 coins. New run starts at 2.'}else{state.target=n+1;tip.textContent=n>=5?'⚡ Bigger group! Keep going.':'✨ Keep growing the group.'}save();update();setTimeout(makeBoard,280);}
+function toastMsg(t){toast.textContent=t;toast.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>toast.classList.remove('show'),850)}
+document.getElementById('restart').onclick=()=>{state.score=0;state.target=2;state.selected=[];state.combo=0;state.groups=0;tip.textContent='✨ Fresh run. How far can you grow?';save();update();makeBoard();};
+document.getElementById('soundBtn').onclick=e=>{state.sound=!state.sound;e.currentTarget.textContent=state.sound?'♪':'×';toastMsg(state.sound?'Sound on':'Sound off')};
+document.getElementById('dailyBtn').onclick=()=>document.getElementById('dailyModal').classList.remove('hidden');
+document.getElementById('closeDaily').onclick=()=>document.getElementById('dailyModal').classList.add('hidden');
+document.getElementById('playDaily').onclick=()=>{document.getElementById('dailyModal').classList.add('hidden');toastMsg('🎯 Daily challenge active!')};
+document.getElementById('shareBtn').onclick=async()=>{const text=`I scored ${state.score.toLocaleString()} on Gridly! 🧩🔥 Can you beat me?`;try{if(navigator.share)await navigator.share({title:'Gridly',text});else await navigator.clipboard.writeText(text);toastMsg('↗ Score ready to share!')}catch(e){}};
+update();makeBoard();

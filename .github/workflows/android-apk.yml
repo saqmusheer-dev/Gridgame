@@ -13,52 +13,40 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
-
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
           packages: platform-tools
-
       - name: Install Android SDK packages
         run: sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
-
       - name: Install npm packages
         run: npm install
-
       - name: Add Android project
         run: npx cap add android
-
       - name: Prepare web assets
         run: npm run prepare:web
-
       - name: Generate launcher icon
         run: |
           npm install --no-save sharp@0.34.3
           mkdir -p android/app/src/main/res/drawable
           node -e "require('sharp')('icon.svg').resize(512,512).png().toFile('android/app/src/main/res/drawable/icon.png')"
-          sed -i 's#@mipmap/ic_launcher#@drawable/icon#g; s#@mipmap/ic_launcher_round#@drawable/icon#g' android/app/src/main/AndroidManifest.xml
-
+          sed -i 's#@mipmap/ic_launcher#@drawable/icon#g; s#@mipmap/ic_launcher_round#@drawable/icon#g; s#@drawable/icon_round#@drawable/icon#g' android/app/src/main/AndroidManifest.xml
       - name: Sync Capacitor
         run: npx cap sync android
-
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug --no-daemon
-
       - name: Rename APK
         run: cp android/app/build/outputs/apk/debug/app-debug.apk Gridly-v1.0.0-test.apk
-
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:

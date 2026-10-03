@@ -15,56 +15,31 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="shop.css" />
 </head>
 <body>
   <div id="splash" class="splash" aria-label="Loading Gridly">
-    <div class="splash-orbit"></div>
-    <div class="splash-grid" aria-hidden="true">
-      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-    </div>
-    <div class="splash-brand">GRID<span>LY</span></div>
-    <div class="splash-tag">MATCH • GROW • GLOW</div>
-    <div class="splash-loader"><span></span></div>
-    <div class="splash-loading">LOADING</div>
+    <div class="splash-orbit"></div><div class="splash-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="splash-brand">GRID<span>LY</span></div><div class="splash-tag">MATCH • GROW • GLOW</div><div class="splash-loader"><span></span></div><div class="splash-loading">LOADING</div>
   </div>
-
   <div class="ambient a1"></div><div class="ambient a2"></div>
   <main class="app">
     <header class="topbar">
       <div class="brand"><div class="logo"><i></i><i></i><i></i><i></i></div><div><div class="brand-name">GRIDLY</div><div class="tagline">MATCH • GROW • GLOW</div></div></div>
-      <button class="icon-btn" id="soundBtn" aria-label="Toggle sound">♪</button>
+      <div class="header-actions"><button class="icon-btn" id="shopBtn" aria-label="Colour shop">🎨</button><button class="icon-btn" id="soundBtn" aria-label="Toggle sound">♪</button></div>
     </header>
-
-    <section class="hero-row">
-      <div><span class="eyebrow">YOUR SCORE</span><div class="score" id="score">0</div><div class="best">BEST <b id="best">0</b></div></div>
-      <div class="coin-card"><span>🪙</span><div><small>COINS</small><b id="coins">0</b></div></div>
-    </section>
-
-    <section class="challenge-card">
-      <div class="challenge-head"><div><span class="eyebrow">TODAY'S CHALLENGE</span><h2 id="dailyTitle">Color Rush</h2></div><div class="streak-badge">🔥 <b id="dayStreak">1</b> day</div></div>
-      <div class="challenge-progress"><div id="dailyBar"></div></div>
-      <div class="challenge-foot"><span id="dailyText">Match 20 groups</span><b id="dailyReward">+50 🪙</b></div>
-    </section>
-
-    <section class="mission-card">
-      <div class="mission-main"><div class="pulse-dot"></div><div><span id="missionKicker">NEXT COMBO</span><h3>Match <strong id="target">2</strong> colors</h3></div></div>
-      <div class="combo"><span>COMBO</span><b id="combo">0</b></div>
-    </section>
-
-    <section class="board-shell">
-      <div class="board-top"><span id="boardHint">Find the same colors</span><span class="rainbow-note" id="rainbowNote">🌈 Rainbow = ANY color</span></div>
-      <div id="board" class="board" aria-label="Color matching board"></div>
-    </section>
-
+    <section class="hero-row"><div><span class="eyebrow">YOUR SCORE</span><div class="score" id="score">0</div><div class="best">BEST <b id="best">0</b></div></div><div class="coin-card"><span>🪙</span><div><small>COINS</small><b id="coins">0</b></div></div></section>
+    <section class="challenge-card"><div class="challenge-head"><div><span class="eyebrow">TODAY'S CHALLENGE</span><h2 id="dailyTitle">Color Rush</h2></div><div class="streak-badge">🔥 <b id="dayStreak">1</b> day</div></div><div class="challenge-progress"><div id="dailyBar"></div></div><div class="challenge-foot"><span id="dailyText">Match 20 groups</span><b id="dailyReward">+50 🪙</b></div></section>
+    <section class="mission-card"><div class="mission-main"><div class="pulse-dot"></div><div><span id="missionKicker">NEXT COMBO</span><h3>Match <strong id="target">2</strong> colors</h3></div></div><div class="combo"><span>COMBO</span><b id="combo">0</b></div></section>
+    <section class="board-shell"><div class="board-top"><span id="boardHint">Find the same colors</span><span class="rainbow-note" id="rainbowNote">🌈 Rainbow = ANY color</span></div><div id="board" class="board" aria-label="Color matching board"></div></section>
     <section class="quick-stats"><div><span>GROUP</span><b id="groupScore">+10</b></div><div><span>GROUPS</span><b id="groups">0</b></div><div><span>STREAK</span><b id="streak">0</b></div></section>
-
     <div class="tip" id="tip">✨ Pick matching squares. Bigger groups = bigger points.</div>
     <div class="bottom-actions"><button id="dailyBtn" class="secondary">🎯 Daily</button><button id="restart" class="primary">↻ New Run</button><button id="shareBtn" class="secondary">↗ Share</button></div>
   </main>
-
   <div id="toast" class="toast"></div>
   <div id="reward" class="reward hidden"><div class="reward-rays"></div><div class="reward-emoji">🪙</div><strong>+100 COINS</strong><span>3 × 3 complete!</span></div>
   <div id="dailyModal" class="modal hidden"><div class="modal-box"><button class="close" id="closeDaily">×</button><span class="eyebrow">DAILY CHALLENGE</span><h2>Keep your streak alive 🔥</h2><p>Today: match <b>20 groups</b> and earn <b>50 coins</b>.</p><div class="daily-big"><b id="dailyModalCount">0</b><span>/ 20 groups</span></div><button class="primary full" id="playDaily">PLAY NOW</button></div></div>
+  <div id="shopModal" class="modal hidden"><div class="modal-box shop-box"><button class="close" id="closeShop">×</button><span class="eyebrow">COLOUR SHOP</span><h2>Spend coins. Change your vibe. 🎨</h2><p>Unlock a colour theme and it becomes part of your random tile palette.</p><div id="shopList" class="shop-list"></div></div></div>
   <script src="game.js"></script>
 </body>
 </html>

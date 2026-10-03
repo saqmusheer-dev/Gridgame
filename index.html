@@ -2,48 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f172a" />
-  <title>Grid Game — Match & Grow</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#090b16" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Gridly — Match. Grow. Glow.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="ambient a1"></div><div class="ambient a2"></div>
   <main class="app">
     <header class="topbar">
-      <div>
-        <div class="eyebrow">MATCH • GROW • EARN</div>
-        <h1>Grid Game</h1>
-      </div>
-      <div class="coin-pill" aria-label="Coins"><span>🪙</span><strong id="coins">0</strong></div>
+      <div class="brand"><div class="logo"><i></i><i></i><i></i><i></i></div><div><div class="brand-name">GRIDLY</div><div class="tagline">MATCH • GROW • GLOW</div></div></div>
+      <button class="icon-btn" id="soundBtn" aria-label="Toggle sound">♪</button>
     </header>
 
-    <section class="score-card">
-      <div><span class="label">SCORE</span><strong id="score">0</strong></div>
-      <div><span class="label">CURRENT MATCH</span><strong><span id="target">2</span>×</strong></div>
-      <div><span class="label">BEST</span><strong id="best">0</strong></div>
+    <section class="hero-row">
+      <div><span class="eyebrow">YOUR SCORE</span><div class="score" id="score">0</div><div class="best">BEST <b id="best">0</b></div></div>
+      <div class="coin-card"><span>🪙</span><div><small>COINS</small><b id="coins">0</b></div></div>
     </section>
 
-    <section class="mission">
-      <div class="mission-copy">
-        <span class="dot"></span>
-        <div><b id="missionTitle">Match 2 squares</b><small>Select the same color</small></div>
-      </div>
-      <div class="streak" id="streak">0 matched</div>
+    <section class="challenge-card">
+      <div class="challenge-head"><div><span class="eyebrow">TODAY'S CHALLENGE</span><h2 id="dailyTitle">Color Rush</h2></div><div class="streak-badge">🔥 <b id="dayStreak">1</b> day</div></div>
+      <div class="challenge-progress"><div id="dailyBar"></div></div>
+      <div class="challenge-foot"><span id="dailyText">Match 20 groups</span><b id="dailyReward">+50 🪙</b></div>
     </section>
 
-    <section class="board-wrap">
-      <div id="board" class="board" aria-label="Game board"></div>
+    <section class="mission-card">
+      <div class="mission-main"><div class="pulse-dot"></div><div><span id="missionKicker">NEXT COMBO</span><h3>Match <strong id="target">2</strong> colors</h3></div></div>
+      <div class="combo"><span>COMBO</span><b id="combo">0</b></div>
     </section>
 
-    <div class="hint" id="hint">Find 2 squares with the same color.</div>
-    <button id="restart" class="restart">↻ New Run</button>
+    <section class="board-shell">
+      <div class="board-top"><span id="boardHint">Find the same colors</span><span class="rainbow-note" id="rainbowNote">🌈 Rainbow = ANY color</span></div>
+      <div id="board" class="board" aria-label="Color matching board"></div>
+    </section>
 
-    <div id="reward" class="reward hidden" role="status">
-      <div class="reward-icon">🪙</div>
-      <div><b>+100 coins!</b><span>3×3 match completed</span></div>
-    </div>
+    <section class="quick-stats"><div><span>GROUP</span><b id="groupScore">+10</b></div><div><span>GROUPS</span><b id="groups">0</b></div><div><span>STREAK</span><b id="streak">0</b></div></section>
+
+    <div class="tip" id="tip">✨ Pick matching squares. Bigger groups = bigger points.</div>
+    <div class="bottom-actions"><button id="dailyBtn" class="secondary">🎯 Daily</button><button id="restart" class="primary">↻ New Run</button><button id="shareBtn" class="secondary">↗ Share</button></div>
   </main>
 
+  <div id="toast" class="toast"></div>
+  <div id="reward" class="reward hidden"><div class="reward-rays"></div><div class="reward-emoji">🪙</div><strong>+100 COINS</strong><span>3 × 3 complete!</span></div>
+  <div id="dailyModal" class="modal hidden"><div class="modal-box"><button class="close" id="closeDaily">×</button><span class="eyebrow">DAILY CHALLENGE</span><h2>Keep your streak alive 🔥</h2><p>Today: match <b>20 groups</b> and earn <b>50 coins</b>.</p><div class="daily-big"><b id="dailyModalCount">0</b><span>/ 20 groups</span></div><button class="primary full" id="playDaily">PLAY NOW</button></div></div>
   <script src="game.js"></script>
 </body>
 </html>

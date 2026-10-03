@@ -1,0 +1,13 @@
+{
+  "name": "Gridly — Match. Grow. Glow.",
+  "short_name": "Gridly",
+  "description": "A colorful casual matching game. Match, grow your combo and collect coins.",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#087cf5",
+  "theme_color": "#087cf5",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}

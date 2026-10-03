@@ -1,0 +1,9 @@
+{
+  "appId": "com.limradigitals.gridly",
+  "appName": "Gridly",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {
+    "backgroundColor": "#087cf5"
+  }
+}

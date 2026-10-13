@@ -8,7 +8,7 @@ let state={score:+localStorage.getItem('grid_score')||0,best:+localStorage.getIt
 let groups=[];let nextId=1;let swipeStart=null;let justSwiped=false;let voiceBusy=false;
 if(state.day!==new Date().toDateString()){state.day=new Date().toDateString();state.daily=0;localStorage.setItem('grid_daily',0);}
 function save(){localStorage.setItem('grid_score',state.score);localStorage.setItem('grid_best',state.best);localStorage.setItem('grid_coins',state.coins);localStorage.setItem('grid_daily',state.daily);localStorage.setItem('grid_day',state.day);localStorage.setItem('grid_active_color',state.activeColor);localStorage.setItem('grid_owned',JSON.stringify(state.owned));localStorage.setItem('grid_sound',state.sound?'on':'off');localStorage.setItem('grid_voice',state.voice?'on':'off');}
-function update(){scoreEl.textContent=state.score.toLocaleString();bestEl.textContent=state.best.toLocaleString();coinsEl.textContent=state.coins.toLocaleString();targetEl.textContent=state.target;comboEl.textContent=state.combo;groupsEl.textContent=state.groups;streakEl.textContent=state.combo;groupScoreEl.textContent='+'+(POINTS[state.target]||10);missionKicker.textContent=state.target===9?'FINAL CUBE':state.target===6?'BUILD 3×3':'NEXT MERGE';$('dailyText').textContent=`Match ${Math.min(state.daily,20)}/20 groups`;$('dailyModalCount').textContent=Math.min(state.daily,20);$('dailyBar').style.width=Math.min(100,state.daily*5)+'%';$('soundBtn').textContent=state.sound?'♪':'×';$('voiceBtn').textContent=state.voice?'🗣️':'🔇';}
+function update(){scoreEl.textContent=state.score.toLocaleString();bestEl.textContent=state.best.toLocaleString();coinsEl.textContent=state.coins.toLocaleString();targetEl.textContent=state.target;comboEl.textContent=state.combo;groupsEl.textContent=state.groups;streakEl.textContent=state.combo;groupScoreEl.textContent='+'+(POINTS[state.target]||10);missionKicker.textContent=state.target===9?'FINAL CUBE':state.target===6?'BUILD 3×3':'NEXT MERGE';$('dailyText').textContent=`Match ${Math.min(state.daily,20)}/20 groups`;$('dailyModalCount').textContent=Math.min(state.daily,20);$('dailyBar').style.width=Math.min(100,state.daily*5)+'%';$('soundBtn').textContent=state.sound?'♪':'×';$('voiceBtn').textContent=state.voice?'🗣️':'🔇';if($('settingSoundState')){$('settingSoundState').textContent=state.sound?'ON':'OFF';$('settingSoundState').classList.toggle('off',!state.sound);$('settingVoiceState').textContent=state.voice?'ON':'OFF';$('settingVoiceState').classList.toggle('off',!state.voice);}}
 function pickColor(){const active=SHOP.find(x=>x.id===state.activeColor);const palette=active&&active.color!=='rainbow'?[active.color,...COLORS.filter(c=>c!==active.color)]:COLORS;return palette[Math.floor(Math.random()*palette.length)];}
 function allowedShape(size,w,h){if(size===2)return(w===2&&h===1)||(w===1&&h===2);if(size===3)return(w===3&&h===1)||(w===1&&h===3);if(size===4)return w===2&&h===2;if(size===6)return(w===3&&h===2)||(w===2&&h===3);if(size===9)return w===3&&h===3;return false;}
 function cellsInfo(cells){const rows=cells.map(i=>Math.floor(i/6)),cols=cells.map(i=>i%6);const minR=Math.min(...rows),maxR=Math.max(...rows),minC=Math.min(...cols),maxC=Math.max(...cols);return{minR,maxR,minC,maxC,w:maxC-minC+1,h:maxR-minR+1};}
@@ -56,3 +56,22 @@ $('shopBtn').onclick=()=>{$('shopModal').classList.remove('hidden');renderShop()
 $('dailyBtn').onclick=()=>$('dailyModal').classList.remove('hidden');$('closeDaily').onclick=()=>$('dailyModal').classList.add('hidden');$('playDaily').onclick=()=>{$('dailyModal').classList.add('hidden');toastMsg('🎯 Daily challenge active!');voicePraise('great');};
 $('shareBtn').onclick=async()=>{const text=`I scored ${state.score.toLocaleString()} on Gridly! 🧩🔥 Can you beat me?`;try{if(navigator.share)await navigator.share({title:'Gridly',text});else await navigator.clipboard.writeText(text);toastMsg('↗ Score ready to share!');}catch(e){}};
 update();makeBoard();window.addEventListener('load',()=>{setTimeout(()=>$('splash')?.classList.add('hide'),1900);});
+
+// Main navigation: simple, child-friendly destinations with clear feedback.
+function setActiveTab(tab){document.querySelectorAll('.nav-item').forEach(btn=>btn.classList.toggle('active',btn.dataset.tab===tab));}
+function openSettings(){$('settingsModal').classList.remove('hidden');update();}
+function openProfile(){$('profileBest').textContent=state.best.toLocaleString();$('profileCoins').textContent=state.coins.toLocaleString();$('profileGroups').textContent=state.groups.toLocaleString();$('profileModal').classList.remove('hidden');}
+document.querySelectorAll('.nav-item').forEach(btn=>btn.addEventListener('click',()=>{
+ const tab=btn.dataset.tab;setActiveTab(tab);
+ if(tab==='home'){window.scrollTo({top:0,behavior:'smooth'});toastMsg('🏠 Welcome back!');}
+ if(tab==='play'){document.querySelector('.board-shell').scrollIntoView({behavior:'smooth',block:'center'});toastMsg('🎮 Let’s play!');}
+ if(tab==='daily'){$('dailyModal').classList.remove('hidden');}
+ if(tab==='profile')openProfile();
+}));
+$('settingsBtn').onclick=openSettings;
+$('closeSettings').onclick=()=>$('settingsModal').classList.add('hidden');
+$('settingsDone').onclick=()=>$('settingsModal').classList.add('hidden');
+$('settingSound').onclick=()=>{state.sound=!state.sound;save();update();toastMsg(state.sound?'🔊 Sounds are on!':'🔕 Sounds are off');if(state.sound)playTone('coin');};
+$('settingVoice').onclick=()=>{state.voice=!state.voice;save();update();toastMsg(state.voice?'🗣️ Cheer voice is on!':'🤫 Cheer voice is off');if(state.voice)voicePraise('great');};
+$('closeProfile').onclick=()=>$('profileModal').classList.add('hidden');
+$('profilePlay').onclick=()=>{$('profileModal').classList.add('hidden');setActiveTab('play');document.querySelector('.board-shell').scrollIntoView({behavior:'smooth',block:'center'});};

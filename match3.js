@@ -52,7 +52,7 @@
   }
   function removeAndRefill(remove){
     if(!remove.size)return;
-    const hadCube=getCube().size>=9||remove.size>=9;
+    const hadCube=getCube().size>=9;
     if(hadCube){cubeCount++;state.coins+=100;state.combo=Math.max(state.combo+1,3);toastMsg('🌈 AMAZING 3×3 CUBE! +100 coins');playTone('cube');voicePraise('cube');reward.classList.remove('hidden');setTimeout(()=>reward.classList.add('hidden'),1250);}
     else{playTone(remove.size>=5?'big':'merge');if(remove.size>=4){state.coins+=2;toastMsg('✨ Great match! +2 coins');}else toastMsg('Nice match!');voicePraise(state.combo>=5?'excellent':'nice');}
     matchCount++;state.groups=matchCount;state.daily=Math.min(20,state.daily+1);state.combo++;
@@ -102,7 +102,7 @@
     if(to>=0&&to<TOTAL&&to!==start.from)trySwap(start.from,to);
   }
   function onCancel(e){if(pointer){e.preventDefault();e.stopImmediatePropagation();pointer=null;}}
-  board.addEventListener('pointerdown',onDown,true);board.addEventListener('pointerup',onUp,true);board.addEventListener('pointercancel',onCancel,true);
+  board.addEventListener('pointerdown',onDown,true);board.addEventListener('pointerup',onUp,true);board.addEventListener('pointercancel',onCancel,true);board.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();},true);
   board.addEventListener('touchstart',e=>{e.stopImmediatePropagation();},{capture:true,passive:false});
   board.addEventListener('touchend',e=>{e.stopImmediatePropagation();},{capture:true,passive:false});
   const oldRestart=$('restart').onclick;

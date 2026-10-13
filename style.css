@@ -83,3 +83,38 @@ body { min-height:100svh; }
 .board .tile .merge-size { width:clamp(18px,5.5vw,25px); height:clamp(18px,5.5vw,25px); font-size:clamp(10px,2.8vw,13px); }
 .bottom-nav { bottom:calc(6px + env(safe-area-inset-bottom)); }
 @media(max-height:760px) { .app { padding-top:calc(30px + env(safe-area-inset-top)); } .board { height:auto !important; min-height:0 !important; aspect-ratio:1 / 1 !important; } }
+
+
+/* Endless candy-grid mode: jewel-like square tiles, fixed 9x9 board. */
+.board.match3-board {
+  display:grid !important;
+  grid-template-columns:repeat(9,minmax(0,1fr)) !important;
+  grid-template-rows:repeat(9,minmax(0,1fr)) !important;
+  width:100%; height:auto !important; aspect-ratio:1/1 !important;
+  gap:clamp(2px,0.75vw,5px) !important;
+  padding:clamp(5px,1.2vw,8px) !important;
+  border-radius:15px;
+  background:linear-gradient(145deg,#1a2b43,#0d1728);
+  box-shadow:inset 0 0 0 1px #ffffff12,inset 0 5px 16px #0004;
+  overflow:hidden;
+  touch-action:none;
+}
+.candy-tile {
+  appearance:none; position:relative; display:grid; place-items:center;
+  min-width:0; min-height:0; width:100%; height:100%; padding:0;
+  border:1px solid #ffffff18; border-radius:clamp(5px,1.5vw,10px);
+  background:linear-gradient(145deg,color-mix(in srgb,var(--candy) 70%,white),var(--candy) 48%,color-mix(in srgb,var(--candy) 65%,black));
+  box-shadow:inset 0 2px 1px #ffffff70,inset 0 -4px 2px #0003,0 2px 3px #0005;
+  overflow:hidden; cursor:grab; -webkit-tap-highlight-color:transparent;
+}
+.candy-tile:before { content:""; position:absolute; inset:8% 9% 13%; border-radius:inherit; background:linear-gradient(145deg,#ffffff28,transparent 45%,#00000012); pointer-events:none; }
+.candy-tile:active { transform:scale(.92); filter:brightness(1.14); }
+.candy-face { position:relative; z-index:1; font-size:clamp(12px,3.8vw,25px); line-height:1; filter:drop-shadow(0 2px 1px #0004); pointer-events:none; }
+.candy-shine { position:absolute; z-index:1; top:10%; left:15%; width:42%; height:13%; border-radius:50%; transform:rotate(-24deg); background:linear-gradient(90deg,#ffffffa8,#ffffff05); filter:blur(.4px); pointer-events:none; }
+.candy-tile.empty { background:transparent; border-color:transparent; box-shadow:none; }
+.candy-tile.empty:before,.candy-tile.empty:after { display:none; }
+@media(max-width:380px) {
+ .board.match3-board { gap:2px !important; padding:5px !important; border-radius:12px; }
+ .candy-tile { border-radius:5px; }
+ .candy-face { font-size:clamp(11px,3.6vw,17px); }
+}
